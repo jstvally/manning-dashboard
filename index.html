@@ -7,10 +7,16 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:24px 20px}
+a,button,input,select,textarea{font-family:inherit}
 .hdr{padding-bottom:16px;border-bottom:1px solid #1e293b;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
 .hdr h2{font-size:20px;font-weight:600;color:#f1f5f9}
 .hdr p{font-size:12px;color:#64748b;margin-top:3px}
-.etoggle{font-size:12px;color:#38bdf8;cursor:pointer;background:none;border:none;padding:0;font-family:inherit}
+.ghost-btn{font-size:12px;color:#38bdf8;cursor:pointer;background:none;border:none;padding:0}
+.nav{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid #1e293b}
+.ntab{padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ntab.on{color:#38bdf8;border-bottom-color:#38bdf8}
+.ntab:hover{color:#94a3b8}
+.view{display:none}.view.on{display:block}
 .sum-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:20px}
 .met{border-radius:10px;padding:12px 14px}
 .met-val{font-size:22px;font-weight:600}
@@ -19,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .met-green{background:#052e16}.met-green .met-val,.met-green .met-lbl{color:#4ade80}
 .met-orange{background:#431407}.met-orange .met-val,.met-orange .met-lbl{color:#fb923c}
 .met-red{background:#450a0a}.met-red .met-val,.met-red .met-lbl{color:#f87171}
-.met-grey{background:#1e293b}.met-grey .met-val{color:#94a3b8}.met-grey .met-lbl{color:#64748b}
+.met-grey{background:#1e293b}.met-grey .met-val{color:#64748b}.met-grey .met-lbl{color:#475569}
 .alert{border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:13px;display:none;background:#450a0a;border:1px solid #7f1d1d;color:#f87171}
 .rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
 .card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;cursor:pointer;transition:border-color .15s}
@@ -33,11 +39,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bar-t{background:#0f172a;border-radius:4px;height:7px;overflow:hidden;margin-bottom:10px}
 .bar-f{height:100%;border-radius:4px;transition:width .4s}
 .cmeta{font-size:11px;color:#64748b;display:flex;flex-wrap:wrap;gap:6px}
-.col-green{color:#4ade80}.col-orange{color:#fb923c}.col-red{color:#f87171}.col-blue{color:#38bdf8}
 .detail{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;margin-bottom:20px}
 .det-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .det-ttl{font-size:16px;font-weight:600;color:#f1f5f9}
-.closebtn{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px;color:#94a3b8;font-family:inherit}
+.closebtn{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px;color:#94a3b8}
 .det-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:18px}
 .slbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #334155}
 .srow{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:#0f172a;margin-bottom:5px}
@@ -45,41 +50,81 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sgap{font-size:11px;padding:2px 8px;border-radius:20px;background:#450a0a;color:#f87171}
 .sok{font-size:11px;color:#4ade80}
 .sover-tag{font-size:11px;color:#4ade80}
-.cmt{background:#0f172a;border-radius:8px;padding:12px;margin-top:12px;font-size:12px;color:#94a3b8}
-.cmtlbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
 .gapbox{background:#431407;border:1px solid #7c2d12;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:13px;color:#fb923c}
+
+/* Inline note */
+.note-section{margin-top:14px}
+.note-lbl{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.note-saved{font-size:11px;color:#4ade80;opacity:0;transition:opacity .3s}
+.note-saved.show{opacity:1}
+.note-ta{width:100%;padding:8px 10px;font-size:12px;line-height:1.5;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;resize:none;min-height:52px;overflow:hidden}
+.note-ta:focus{outline:none;border-color:#38bdf8}
+.note-ta::placeholder{color:#475569}
+
+/* Editor */
 .editor{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:20px;display:none}
 .etabs{display:flex;gap:6px;margin-bottom:16px}
-.etab{padding:5px 14px;font-size:12px;border:1px solid #334155;border-radius:8px;cursor:pointer;color:#64748b;background:#0f172a;font-family:inherit}
+.etab{padding:5px 14px;font-size:12px;border:1px solid #334155;border-radius:8px;cursor:pointer;color:#64748b;background:#0f172a}
 .etab.on{border-color:#38bdf8;color:#38bdf8;font-weight:600}
-.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .ef{display:flex;flex-direction:column;gap:4px}
 .elbl{font-size:12px;color:#94a3b8;font-weight:500}
 .esub{font-size:11px;color:#64748b}
 .erow{display:flex;gap:8px;align-items:center}
-.erow input{width:58px;padding:5px 8px;font-size:13px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;text-align:center;font-family:inherit}
+.erow input{width:58px;padding:5px 8px;font-size:13px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;text-align:center}
 .erow input:focus{outline:none;border-color:#38bdf8}
 .erow span{font-size:12px;color:#64748b}
-.ubtn{margin-top:14px;padding:7px 18px;font-size:13px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;cursor:pointer;font-family:inherit}
+.ubtn{margin-top:14px;padding:7px 18px;font-size:13px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;cursor:pointer}
 .ubtn:hover{background:#334155}
 .cnote{font-size:11px;color:#fb923c;margin-top:8px;display:none}
 .tgt-note{font-size:12px;color:#64748b;margin-bottom:14px}
-@media(max-width:600px){.sum-grid{grid-template-columns:repeat(2,1fr)}.sum-grid .met:last-child{grid-column:span 2}}
+
+/* Vacancies */
+.vac-stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.vac-stat{background:#1e293b;border-radius:10px;padding:10px 16px;font-size:13px;color:#94a3b8}
+.vac-stat strong{color:#f1f5f9;font-size:18px;display:block;font-weight:600}
+.vac-empty{background:#1e293b;border-radius:14px;padding:32px;text-align:center;color:#64748b;font-size:14px}
+.room-group{margin-bottom:24px}
+.room-group-title{font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center}
+.room-group-count{font-size:11px;background:#450a0a;color:#f87171;padding:2px 8px;border-radius:20px;font-weight:600;text-transform:none;letter-spacing:0}
+.vac-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:8px}
+.vac-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.vac-num{font-size:12px;font-weight:600;color:#64748b}
+.vac-annotated{font-size:11px;color:#4ade80}
+.vac-unannotated{font-size:11px;color:#475569}
+.vac-fields{display:grid;grid-template-columns:1fr 1fr 2fr;gap:8px;align-items:start}
+.vac-field{display:flex;flex-direction:column;gap:4px}
+.vac-label{font-size:11px;color:#64748b;font-weight:500}
+.vac-select,.vac-input{padding:6px 8px;font-size:12px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#f1f5f9;width:100%}
+.vac-select:focus,.vac-input:focus{outline:none;border-color:#38bdf8}
+.vac-select option{background:#0f172a}
+.vac-save-btn{margin-top:10px;padding:5px 14px;font-size:12px;border:1px solid #334155;border-radius:8px;background:#0f172a;color:#94a3b8;cursor:pointer}
+.vac-save-btn:hover{background:#334155;color:#f1f5f9}
+.vac-saved-note{font-size:11px;color:#4ade80;margin-top:8px;display:none}
+@media(max-width:600px){
+  .sum-grid{grid-template-columns:repeat(2,1fr)}
+  .sum-grid .met:last-child{grid-column:span 2}
+  .vac-fields{grid-template-columns:1fr 1fr}
+  .vac-fields .vac-field:last-child{grid-column:span 2}
+}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div><h2>Room manning dashboard</h2><p>Kilcoy Global Foods · Kyneton · w/c <span id="wklbl">03.03.2026</span></p></div>
-  <button class="etoggle" onclick="toggleEd()">edit ↓</button>
+  <button class="ghost-btn" id="edit-toggle-btn" onclick="toggleEd()">edit ↓</button>
 </div>
 
 <div class="editor" id="ed">
   <div class="etabs">
-    <button class="etab on" id="t-hc" onclick="swTab('hc')">Current headcount</button>
-    <button class="etab" id="t-tgt" onclick="swTab('tgt')">Approved targets</button>
+    <button class="etab on" id="t-hc"  onclick="swTab('hc')">Current headcount</button>
+    <button class="etab"    id="t-tgt" onclick="swTab('tgt')">Approved targets</button>
   </div>
-  <div id="p-hc"><div class="egrid" id="g-hc"></div><button class="ubtn" onclick="applyHC()">Update headcount</button></div>
+  <div id="p-hc">
+    <div class="egrid" id="g-hc"></div>
+    <button class="ubtn" onclick="applyHC()">Update headcount</button>
+  </div>
   <div id="p-tgt" style="display:none">
     <p class="tgt-note">Update when approved headcount changes. This sets the manning target for each shift.</p>
     <div class="egrid" id="g-tgt"></div>
@@ -88,45 +133,87 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<div class="sum-grid" id="sg"></div>
-<div class="alert" id="ab"></div>
-<div class="rooms" id="rg"></div>
+<div class="nav">
+  <button class="ntab on" onclick="showView('dashboard',this)">Dashboard</button>
+  <button class="ntab"    onclick="showView('vacancies',this)">Vacancies</button>
+</div>
 
-<div class="detail" id="dp">
-  <div class="det-hdr">
-    <div class="det-ttl" id="dttl"></div>
-    <button class="closebtn" onclick="closeD()">close</button>
+<div class="view on" id="view-dashboard">
+  <div class="sum-grid" id="sg"></div>
+  <div class="alert" id="ab"></div>
+  <div class="rooms" id="rg"></div>
+  <div class="detail" id="dp">
+    <div class="det-hdr">
+      <div class="det-ttl" id="dttl"></div>
+      <button class="closebtn" onclick="closeD()">close</button>
+    </div>
+    <div class="det-stats" id="dstats"></div>
+    <div id="dbody"></div>
   </div>
-  <div class="det-stats" id="dstats"></div>
-  <div id="dbody"></div>
+</div>
+
+<div class="view" id="view-vacancies">
+  <div style="margin-bottom:16px">
+    <div style="font-size:15px;font-weight:600;color:#f1f5f9">Vacancy register</div>
+    <div style="font-size:12px;color:#64748b;margin-top:2px">Auto-generated from headcount gaps · annotations save to this browser</div>
+  </div>
+  <div class="vac-stats" id="vac-stats"></div>
+  <div id="vac-list"></div>
 </div>
 
 <script>
 const PL={A:"Above moderate",M:"Moderate",L:"Light"};
-const ROOMS=[
-  {id:"boning",name:"Boning room",shifts:[{label:"Shannon Ebert",current:71,target:79,comment:"1 will leave for training",pes:"M"}]},
-  {id:"beefkill",name:"Beef kill floor",shifts:[{label:"AM (Brodie Dawson)",current:39,target:40,comment:null,pes:"A"},{label:"PM (William Dorling)",current:36,target:36,comment:"1x WC",pes:"A"}]},
-  {id:"lambkill",name:"Lamb kill floor",shifts:[{label:"Jason Coley",current:94,target:99,comment:"2 x WC",pes:"A"}]},
-  {id:"loadout",name:"Loadout",shifts:[{label:"AM (Julian Williams)",current:33,target:30,comment:"2x one day a week",pes:"L"},{label:"PM (Jordan Lopez)",current:19,target:20,comment:"1x one day a week",pes:"L"}]},
-  {id:"offal-am",name:"Offal AM",shifts:[{label:"Paul Botheras",current:40,target:44,comment:null,pes:"M"}]},
-  {id:"offal-pm",name:"Offal PM",shifts:[{label:"Jacinta Webber",current:14,target:13,comment:null,pes:"M"}]}
+const DEFAULTS=[
+  {id:"boning",   name:"Boning room",    shifts:[{label:"Shannon Ebert",       current:71,target:79,pes:"M"}]},
+  {id:"beefkill", name:"Beef kill floor",shifts:[{label:"AM (Brodie Dawson)",   current:39,target:40,pes:"A"},{label:"PM (William Dorling)",current:36,target:36,pes:"A"}]},
+  {id:"lambkill", name:"Lamb kill floor",shifts:[{label:"Jason Coley",          current:94,target:99,pes:"A"}]},
+  {id:"loadout",  name:"Loadout",        shifts:[{label:"AM (Julian Williams)", current:33,target:30,pes:"L"},{label:"PM (Jordan Lopez)",  current:19,target:20,pes:"L"}]},
+  {id:"offal-am", name:"Offal AM",       shifts:[{label:"Paul Botheras",        current:40,target:44,pes:"M"}]},
+  {id:"offal-pm", name:"Offal PM",       shifts:[{label:"Jacinta Webber",       current:14,target:13,pes:"M"}]}
 ];
+
+const LS_ROOMS="manning_rooms_v3";
+const LS_NOTES="manning_notes_v3";
+const LS_VACS ="manning_vacs_v3";
+
+function saveRooms(r){try{localStorage.setItem(LS_ROOMS,JSON.stringify(r));}catch(e){}}
+function loadRooms(){try{const d=localStorage.getItem(LS_ROOMS);if(d)return JSON.parse(d);}catch(e){}return JSON.parse(JSON.stringify(DEFAULTS));}
+function saveNotes(n){try{localStorage.setItem(LS_NOTES,JSON.stringify(n));}catch(e){}}
+function loadNotes(){try{const d=localStorage.getItem(LS_NOTES);if(d)return JSON.parse(d);}catch(e){}return{};}
+function saveVacs(v){try{localStorage.setItem(LS_VACS,JSON.stringify(v));}catch(e){}}
+function loadVacs(){try{const d=localStorage.getItem(LS_VACS);if(d)return JSON.parse(d);}catch(e){}return{};}
+
+let ROOMS=loadRooms();
+let NOTES=loadNotes();
+let VACS =loadVacs();
 
 const rC=r=>r.shifts.reduce((s,x)=>s+x.current,0);
 const rT=r=>r.shifts.reduce((s,x)=>s+x.target,0);
 const pc=(c,t)=>t===0?0:Math.min(Math.round(c/t*100),100);
 const st=(c,t)=>c>t?"over":c===t?"full":pc(c,t)>=85?"good":pc(c,t)>=70?"warn":"crit";
 const BC={over:"#4ade80",full:"#4ade80",good:"#4ade80",warn:"#fb923c",crit:"#f87171"};
-
 function pctCls(p){return p>=100?"met-green":p>=90?"met-orange":"met-red"}
 function gapCls(g){return g===0?"met-green":g<=9?"met-orange":"met-red"}
 function overCls(o){return o>0?"met-green":"met-grey"}
 function onTgtCls(n,tot){return n===tot?"met-green":"met-neutral"}
-
 function tile(val,lbl,cls){return`<div class="met ${cls}"><div class="met-val">${val}</div><div class="met-lbl">${lbl}</div></div>`}
+function noteKey(roomId,shiftLabel){return shiftLabel?`${roomId}__${shiftLabel}`:roomId;}
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
 
-let sel=null,activeTab="hc";
+// auto-resize textarea to content
+function autoSize(el){el.style.height="auto";el.style.height=el.scrollHeight+"px";}
 
+let currentView="dashboard";
+function showView(v,btn){
+  currentView=v;
+  document.querySelectorAll(".view").forEach(el=>el.classList.remove("on"));
+  document.querySelectorAll(".ntab").forEach(el=>el.classList.remove("on"));
+  document.getElementById("view-"+v).classList.add("on");
+  btn.classList.add("on");
+  if(v==="vacancies")renderVacancies();
+}
+
+let activeTab="hc";
 function swTab(t){
   activeTab=t;
   document.getElementById("p-hc").style.display=t==="hc"?"block":"none";
@@ -136,8 +223,9 @@ function swTab(t){
   t==="hc"?buildHC():buildTgt();
 }
 function toggleEd(){
-  const e=document.getElementById("ed"),btn=document.querySelector(".etoggle"),open=e.style.display==="block";
-  e.style.display=open?"none":"block";btn.textContent=open?"edit ↓":"hide ↑";
+  const e=document.getElementById("ed"),btn=document.getElementById("edit-toggle-btn"),open=e.style.display==="block";
+  e.style.display=open?"none":"block";
+  btn.textContent=open?"edit ↓":"hide ↑";
   if(!open) activeTab==="hc"?buildHC():buildTgt();
 }
 function buildHC(){
@@ -146,6 +234,16 @@ function buildHC(){
     return`<div class="ef"><div class="elbl">${r.name}</div><div class="esub">${r.shifts.length>1?s.label:"Current headcount"}</div><div class="erow"><input type="number" id="${k}" value="${s.current}" min="0" max="999" step="1"><span>/ ${s.target} target</span></div></div>`;
   })).join("");
 }
+function applyHC(){
+  ROOMS.forEach(r=>r.shifts.forEach(s=>{
+    const i=document.getElementById(`hc-${r.id}-${s.label.replace(/\W/g,'_')}`);
+    if(i)s.current=parseInt(i.value)||0;
+  }));
+  saveRooms(ROOMS);render();
+  if(sel){const r=ROOMS.find(r=>r.id===sel);if(r)showD(r);}
+  buildHC();
+  if(currentView==="vacancies")renderVacancies();
+}
 function buildTgt(){
   document.getElementById("g-tgt").innerHTML=ROOMS.flatMap(r=>r.shifts.map(s=>{
     const k=`tgt-${r.id}-${s.label.replace(/\W/g,'_')}`;
@@ -153,16 +251,30 @@ function buildTgt(){
   })).join("");
   document.getElementById("cnote").style.display="none";
 }
-function applyHC(){
-  ROOMS.forEach(r=>r.shifts.forEach(s=>{const i=document.getElementById(`hc-${r.id}-${s.label.replace(/\W/g,'_')}`);if(i)s.current=parseInt(i.value)||0;}));
-  render();if(sel){const r=ROOMS.find(r=>r.id===sel);if(r)showD(r);}buildHC();
-}
 function applyTgt(){
-  ROOMS.forEach(r=>r.shifts.forEach(s=>{const i=document.getElementById(`tgt-${r.id}-${s.label.replace(/\W/g,'_')}`);if(i)s.target=parseInt(i.value)||0;}));
-  render();if(sel){const r=ROOMS.find(r=>r.id===sel);if(r)showD(r);}buildHC();buildTgt();
+  ROOMS.forEach(r=>r.shifts.forEach(s=>{
+    const i=document.getElementById(`tgt-${r.id}-${s.label.replace(/\W/g,'_')}`);
+    if(i)s.target=parseInt(i.value)||0;
+  }));
+  saveRooms(ROOMS);render();
+  if(sel){const r=ROOMS.find(r=>r.id===sel);if(r)showD(r);}
+  buildHC();buildTgt();
   document.getElementById("cnote").style.display="none";
+  if(currentView==="vacancies")renderVacancies();
 }
 
+// Save a single note inline, called on blur
+function saveNoteInline(key,el){
+  NOTES[key]=el.value.trim();
+  saveNotes(NOTES);
+  const savedEl=document.getElementById("saved-"+key.replace(/\W/g,'_'));
+  if(savedEl){
+    savedEl.classList.add("show");
+    setTimeout(()=>savedEl.classList.remove("show"),1800);
+  }
+}
+
+let sel=null;
 function render(){
   const totC=ROOMS.reduce((s,r)=>s+rC(r),0);
   const totT=ROOMS.reduce((s,r)=>s+rT(r),0);
@@ -192,10 +304,25 @@ function render(){
     card.innerHTML=`<div class="cname">${r.name}${r.shifts.length>1?' <span style="font-size:10px;color:#64748b;font-weight:400">AM+PM</span>':''}</div>
       <div class="cnum" style="color:${BC[s]}">${c} <span style="font-size:15px;color:#64748b">/ ${t}</span></div>
       <div class="bar-t"><div class="bar-f" style="width:${p}%;background:${BC[s]}"></div></div>
-      <div class="cmeta"><span>${p}%</span>${gap>0?`<span class="col-red">▾ ${gap} gap</span>`:""}${gap<0?`<span class="col-green">▴ ${Math.abs(gap)} over</span>`:""}${gap===0?`<span class="col-green">✓ on target</span>`:""}</div>`;
+      <div class="cmeta"><span>${p}%</span>${gap>0?`<span style="color:#f87171">▾ ${gap} gap</span>`:""}${gap<0?`<span style="color:#4ade80">▴ ${Math.abs(gap)} over</span>`:""}${gap===0?`<span style="color:#4ade80">✓ on target</span>`:""}</div>`;
     card.onclick=()=>{if(sel===r.id){closeD();return;}sel=r.id;showD(r);};
     grid.appendChild(card);
   });
+}
+
+function noteBlock(key){
+  const safeKey=key.replace(/\W/g,'_');
+  const val=esc(NOTES[key]||"");
+  return`<div class="note-section">
+    <div class="note-lbl">
+      <span>Notes</span>
+      <span class="note-saved" id="saved-${safeKey}">✓ saved</span>
+    </div>
+    <textarea class="note-ta" id="ta-${safeKey}" placeholder="Add a note…" rows="2"
+      oninput="autoSize(this)"
+      onblur="saveNoteInline('${key}',this)"
+    >${val}</textarea>
+  </div>`;
 }
 
 function showD(room){
@@ -210,32 +337,116 @@ function showD(room){
     body+=`<div style="margin-bottom:14px"><div class="slbl">Shift breakdown</div>`;
     room.shifts.forEach(sh=>{
       const sg=sh.target-sh.current,ss=st(sh.current,sh.target);
-      body+=`<div class="srow"><div><div class="sname">${sh.label}</div><div style="font-size:11px;color:#64748b">Min. PES: ${PL[sh.pes]}</div></div>
-        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:600;color:${BC[ss]}">${sh.current} / ${sh.target}</span>
-        ${sg>0?`<span class="sgap">-${sg}</span>`:sg<0?`<span class="sover-tag">+${Math.abs(sg)}</span>`:`<span class="sok">✓</span>`}</div></div>`;
+      body+=`<div class="srow">
+        <div><div class="sname">${sh.label}</div><div style="font-size:11px;color:#64748b">Min. PES: ${PL[sh.pes]}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:600;color:${BC[ss]}">${sh.current} / ${sh.target}</span>
+          ${sg>0?`<span class="sgap">-${sg}</span>`:sg<0?`<span class="sover-tag">+${Math.abs(sg)}</span>`:`<span class="sok">✓</span>`}
+        </div>
+      </div>`;
     });
     body+=`</div>`;
+    // one shared note for the whole room
+    body+=noteBlock(noteKey(room.id,null));
   } else {
     body+=`<div style="margin-bottom:14px"><div class="slbl">Detail</div>
-      <div class="srow"><div class="sname">Minimum PES required</div><div style="font-size:13px;font-weight:600;color:#f1f5f9">${PL[room.shifts[0].pes]}</div></div></div>`;
+      <div class="srow">
+        <div class="sname">Minimum PES required</div>
+        <div style="font-size:13px;font-weight:600;color:#f1f5f9">${PL[room.shifts[0].pes]}</div>
+      </div>
+    </div>`;
+    body+=noteBlock(noteKey(room.id,null));
   }
-  const cmts=room.shifts.filter(s=>s.comment);
-  if(cmts.length){
-    body+=`<div class="cmt"><div class="cmtlbl">Notes</div>`;
-    cmts.forEach(s=>{body+=`<div style="margin-top:5px">${room.shifts.length>1?`<span style="font-weight:600;color:#cbd5e1">${s.label}:</span> `:""}${s.comment}</div>`;});
-    body+=`</div>`;
-  }
-  if(gap>0) body+=`<div class="gapbox">${gap} ${gap===1?"person":"people"} needed to reach approved target${room.shifts.length>1?" — see shift breakdown above":""}</div>`;
+  if(gap>0) body+=`<div class="gapbox" style="margin-top:14px">${gap} ${gap===1?"person":"people"} needed to reach approved target${room.shifts.length>1?" — see shift breakdown above":""}</div>`;
   document.getElementById("dbody").innerHTML=body;
   document.getElementById("dp").style.display="block";
   document.querySelectorAll(".card").forEach(c=>c.classList.remove("sel"));
   const ac=document.getElementById("card-"+room.id);if(ac)ac.classList.add("sel");
+  // auto-size any pre-filled notes
+  document.querySelectorAll(".note-ta").forEach(ta=>autoSize(ta));
   setTimeout(()=>document.getElementById("dp").scrollIntoView({behavior:"smooth",block:"nearest"}),80);
 }
 function closeD(){
   sel=null;document.getElementById("dp").style.display="none";
   document.querySelectorAll(".card").forEach(c=>c.classList.remove("sel"));
 }
+
+// Vacancies
+function vacKey(roomId,idx){return`${roomId}-${idx}`;}
+function renderVacancies(){
+  const roomsWithGaps=ROOMS.filter(r=>rT(r)-rC(r)>0);
+  const totalVacs=roomsWithGaps.reduce((s,r)=>s+(rT(r)-rC(r)),0);
+  const annotated=Object.keys(VACS).filter(k=>{const v=VACS[k];return v&&(v.skill||v.pes||v.note);}).length;
+  document.getElementById("vac-stats").innerHTML=`
+    <div class="vac-stat"><strong>${totalVacs}</strong>Total vacancies</div>
+    <div class="vac-stat"><strong>${annotated}</strong>Annotated</div>
+    <div class="vac-stat"><strong>${totalVacs-annotated}</strong>Unannotated</div>
+    <div class="vac-stat"><strong>${roomsWithGaps.length}</strong>Rooms with gaps</div>`;
+  const list=document.getElementById("vac-list");
+  if(totalVacs===0){list.innerHTML=`<div class="vac-empty">No vacancies — all rooms are on or above target.</div>`;return;}
+  list.innerHTML=roomsWithGaps.map(r=>{
+    const gap=rT(r)-rC(r);
+    const cards=Array.from({length:gap},(_,i)=>{
+      const key=vacKey(r.id,i);
+      const saved=VACS[key]||{};
+      const hasData=saved.skill||saved.pes||saved.note;
+      return`<div class="vac-card" id="vc-${key}">
+        <div class="vac-card-header">
+          <span class="vac-num">Vacancy ${i+1} of ${gap}</span>
+          <span class="${hasData?"vac-annotated":"vac-unannotated"}" id="ann-${key}">${hasData?"● annotated":"○ unannotated"}</span>
+        </div>
+        <div class="vac-fields">
+          <div class="vac-field"><div class="vac-label">Skill level</div>
+            <select class="vac-select" id="sk-${key}">
+              <option value="">— not set —</option>
+              <option value="Skilled"${saved.skill==="Skilled"?" selected":""}>Skilled</option>
+              <option value="Unskilled"${saved.skill==="Unskilled"?" selected":""}>Unskilled</option>
+            </select>
+          </div>
+          <div class="vac-field"><div class="vac-label">Min. PES</div>
+            <select class="vac-select" id="ps-${key}">
+              <option value="">— not set —</option>
+              <option value="Light"${saved.pes==="Light"?" selected":""}>Light</option>
+              <option value="Moderate"${saved.pes==="Moderate"?" selected":""}>Moderate</option>
+              <option value="Above moderate"${saved.pes==="Above moderate"?" selected":""}>Above moderate</option>
+            </select>
+          </div>
+          <div class="vac-field"><div class="vac-label">Notes</div>
+            <input class="vac-input" id="nt-${key}" type="text" placeholder="e.g. priority fill, skilled boner..." value="${esc(saved.note||"")}">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="vac-save-btn" onclick="saveVac('${key}')">Save</button>
+          <span class="vac-saved-note" id="sv-${key}">✓ Saved</span>
+        </div>
+      </div>`;
+    }).join("");
+    return`<div class="room-group">
+      <div class="room-group-title"><span>${r.name}</span><span class="room-group-count">${gap} ${gap===1?"vacancy":"vacancies"}</span></div>
+      ${cards}
+    </div>`;
+  }).join("");
+}
+function saveVac(key){
+  const skill=document.getElementById("sk-"+key)?.value||"";
+  const pes=document.getElementById("ps-"+key)?.value||"";
+  const note=document.getElementById("nt-"+key)?.value||"";
+  VACS[key]={skill,pes,note};saveVacs(VACS);
+  const hasData=skill||pes||note;
+  const ann=document.getElementById("ann-"+key);
+  if(ann){ann.className=hasData?"vac-annotated":"vac-unannotated";ann.textContent=hasData?"● annotated":"○ unannotated";}
+  const sv=document.getElementById("sv-"+key);
+  if(sv){sv.style.display="inline";setTimeout(()=>sv.style.display="none",2000);}
+  const rwg=ROOMS.filter(r=>rT(r)-rC(r)>0);
+  const tv=rwg.reduce((s,r)=>s+(rT(r)-rC(r)),0);
+  const ann2=Object.keys(VACS).filter(k=>{const v=VACS[k];return v&&(v.skill||v.pes||v.note);}).length;
+  document.getElementById("vac-stats").innerHTML=`
+    <div class="vac-stat"><strong>${tv}</strong>Total vacancies</div>
+    <div class="vac-stat"><strong>${ann2}</strong>Annotated</div>
+    <div class="vac-stat"><strong>${tv-ann2}</strong>Unannotated</div>
+    <div class="vac-stat"><strong>${rwg.length}</strong>Rooms with gaps</div>`;
+}
+
 render();
 </script>
 </body>
